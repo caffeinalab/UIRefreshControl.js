@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>UIRefreshControl</title>
+	<style>
+	#c { position: absolute; left: 50%; margin-left: -50px; }
+	</style>
+</head>
+
+<body>
+	<canvas id="c" width="100" height="400"></canvas><br>
+	<script src="UIRefreshControl.min.js"></script>
+	<script>
+	(function() {
+		var lastTime = 0;
+		var vendors = ['ms', 'moz', 'webkit', 'o'];
+		for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+			window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+			window.cancelAnimationFrame =
+			window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
+		}
+
+		if (!window.requestAnimationFrame)
+			window.requestAnimationFrame = function(callback, element) {
+				var currTime = new Date().getTime();
+				var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+				var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+				                           timeToCall);
+				lastTime = currTime + timeToCall;
+				return id;
+			};
+
+			if (!window.cancelAnimationFrame)
+				window.cancelAnimationFrame = function(id) {
+					clearTimeout(id);
+				};
+			}());
+
+	var refreshControl = new UIRefreshControl('c');
+
+	var t = 0;
+	(function animateLoop(time){
+		requestAnimationFrame(animateLoop);
+		t+=0.1;
+		refreshControl.draw( 0.5+Math.sin(0.5*t)*0.5 );
+	})();
+	</script>
+</body></html>
